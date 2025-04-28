@@ -182,13 +182,17 @@ Following the style guide will help maintain consistency and readability of code
   export default App;
   ```
   `Explanation`:
+
   createContext: Creates a context object (UserContext) to hold global data.
+
   UserProvider: A provider component that wraps the app and provides the context value (user and setUser) to all child components.
+
   useContext: Used in UserProfile and UpdateUser components to access the user data and setUser function from the context.
 
   `Benefits`:
+
   Avoids prop drilling by allowing components to directly access global data without passing props through intermediate components.
-  
+
 - Use the `useCallback` hook to memoize callback functions and avoid unnecessary re-renders.
 - 使用`useCallback` 缓存函数，避免不必要的重新渲染.
   ```js
@@ -229,16 +233,59 @@ Following the style guide will help maintain consistency and readability of code
   export default App;
   ```
   `Explanation`:
-  `useCallback`: useCallback is used to memoize the handleClick function so that it is not recreated on every render unless its dependencies change.
+  useCallback: useCallback is used to memoize the handleClick function so that it is not recreated on every render unless its dependencies change.
   In this example, the dependency array is empty ([]), so the function remains the same across renders.
-  Optimization:
 
-  The ChildComponent is wrapped with React.memo, which prevents it from re-rendering unless its props change.
+  Optimization: The ChildComponent is wrapped with React.memo, which prevents it from re-rendering unless its props change.
   Since the handleClick function is memoized, ChildComponent will not re-render unnecessarily when the parent component updates.
+
   `Benefits`:
   Avoids creating a new function on every render, which can prevent unnecessary re-renders of child components.
   Improves performance in components with expensive re-renders or deep component trees.
+
   - Avoid using anonymous arrow functions inside JSX tree as this can cause unnecessary re-renders of the component, since a new function is created on each render.
+  - 在JSX 中避免使用匿名箭头函数防止不必要的重新渲染
+
+  ```js
+    // bad
+    import React, { useState } from 'react';
+
+  function Counter() {
+    const [count, setCount] = useState(0);
+
+    return (
+      <div>
+        <h1>Count: {count}</h1>
+        {/* Anonymous arrow function inside JSX */}
+        <button onClick={() => setCount(count + 1)}>Increment</button>
+      </div>
+    );
+  }
+
+  export default Counter;
+
+    // good
+    import React, { useState, useCallback } from 'react';
+
+  function Counter() {
+    const [count, setCount] = useState(0);
+
+    // Memoize the handler to ensure it doesn't change between renders
+    const increment = useCallback(() => {
+      setCount((prevCount) => prevCount + 1);
+    }, []);
+
+    return (
+      <div>
+        <h1>Count: {count}</h1>
+        {/* Use the memoized function */}
+        <button onClick={increment}>Increment</button>
+      </div>
+    );
+  }
+
+  export default Counter;
+  ```
 
 ### Performance & Optimizations
 
