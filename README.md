@@ -129,6 +129,61 @@ The console.log in the example helps verify whether the component is being re-re
 By using this approach, unnecessary re-renders can be avoided, improving performance.
 
 - Use the `useContext` hook to access global data without passing props down through multiple components.
+- 使用useContext hook 存取全局数据， 防止组件层层传递props
+```js
+// Example of using useContext to access global data
+import React, { createContext, useContext, useState } from 'react';
+
+// Create a Context
+const UserContext = createContext();
+
+// A provider component to wrap the app and provide the context value
+function UserProvider({ children }) {
+  const [user, setUser] = useState({ name: 'John Doe', age: 30 });
+
+  return (
+    <UserContext.Provider value={{ user, setUser }}>
+      {children}
+    </UserContext.Provider>
+  );
+}
+
+// A component that consumes the context value
+function UserProfile() {
+  const { user } = useContext(UserContext);
+
+  return (
+    <div>
+      <h1>User Profile</h1>
+      <p>Name: {user.name}</p>
+      <p>Age: {user.age}</p>
+    </div>
+  );
+}
+
+// A component that updates the context value
+function UpdateUser() {
+  const { setUser } = useContext(UserContext);
+
+  return (
+    <button onClick={() => setUser({ name: 'Jane Doe', age: 25 })}>
+      Update User
+    </button>
+  );
+}
+
+// Main App component
+function App() {
+  return (
+    <UserProvider>
+      <UserProfile />
+      <UpdateUser />
+    </UserProvider>
+  );
+}
+
+export default App;
+```
 - Use the `useCallback` hook to memoize callback functions and avoid unnecessary re-renders.
 - Avoid using anonymous arrow functions inside JSX tree as this can cause unnecessary re-renders of the component, since a new function is created on each render.
 
