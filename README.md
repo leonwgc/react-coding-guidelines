@@ -2,10 +2,7 @@
 
 This is a code style guide with best practices and additional notes on performance & optimizations. Following the style guide will help maintain consistency and readability of code across a project and team, which can improve code quality and reduce errors. It can also make it easier for new developers to onboard and understand the codebase.
 
-## Table of Contents
-
 - [React coding guidelines](#react-coding-guidelines)
-  - [Table of Contents](#table-of-contents)
   - [Basics](#basics)
   - [Performance \& Optimizations](#performance--optimizations)
   - [Hooks](#hooks)
