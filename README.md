@@ -36,87 +36,87 @@ Following the style guide will help maintain consistency and readability of code
 - Use the `useState` and `useEffect` hooks for managing component state and side effects.
 - 使用 `useState` 和 `useEffect` 钩子来管理组件状态和副作用
 
-```js
-// Bad Code Example:
-import React, { Component } from 'react';
+  ```js
+  // Bad Code Example:
+  import React, { Component } from 'react';
 
-class MyComponent extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      count: 0
-    };
+  class MyComponent extends Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        count: 0
+      };
+    }
+
+    componentDidMount() {
+      document.title = `Current Count: ${this.state.count}`;
+    }
+
+    componentDidUpdate() {
+      document.title = `Current Count: ${this.state.count}`;
+    }
+
+    render() {
+      return (
+        <div>
+          <h1>Current Count: {this.state.count}</h1>
+          <button onClick={() => this.setState({ count: this.state.count + 1 })}>
+            Increment
+          </button>
+        </div>
+      );
+    }
   }
 
-  componentDidMount() {
-    document.title = `Current Count: ${this.state.count}`;
-  }
+  // Good Code Example:
+  import React, { useState, useEffect } from 'react';
 
-  componentDidUpdate() {
-    document.title = `Current Count: ${this.state.count}`;
-  }
+  function MyComponent() {
+    const [count, setCount] = useState(0);
 
-  render() {
+    useEffect(() => {
+      document.title = `Current Count: ${count}`;
+    }, [count]);
+
     return (
       <div>
-        <h1>Current Count: {this.state.count}</h1>
-        <button onClick={() => this.setState({ count: this.state.count + 1 })}>
-          Increment
-        </button>
+        <h1>Current Count: {count}</h1>
+        <button onClick={() => setCount(count + 1)}>Increment</button>
       </div>
     );
   }
-}
-
-// Good Code Example:
-import React, { useState, useEffect } from 'react';
-
-function MyComponent() {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    document.title = `Current Count: ${count}`;
-  }, [count]);
-
-  return (
-    <div>
-      <h1>Current Count: {count}</h1>
-      <button onClick={() => setCount(count + 1)}>Increment</button>
-    </div>
-  );
-}
-  ```
+    ```
 
 - Use `React.memo` to memoize functional components for performance optimization.
 - 使用 `React.memo` 来优化性能，避免不必要的重新渲染
-```js
-// Example of using React.memo to optimize performance
-import React from 'react';
+  ```js
+  // Example of using React.memo to optimize performance
+  import React from 'react';
 
-// A functional component that renders a simple message
-function Message({ text }) {
-  console.log('Message component rendered');
-  return <p>{text}</p>;
-}
+  // A functional component that renders a simple message
+  function Message({ text }) {
+    console.log('Message component rendered');
+    return <p>{text}</p>;
+  }
 
-// Wrapping the component with React.memo to prevent unnecessary re-renders
-const MemoizedMessage = React.memo(Message);
+  // Wrapping the component with React.memo to prevent unnecessary re-renders
+  const MemoizedMessage = React.memo(Message);
 
-function App() {
-  const [count, setCount] = React.useState(0);
+  function App() {
+    const [count, setCount] = React.useState(0);
 
-  return (
-    <div>
-      <h1>Count: {count}</h1>
-      <button onClick={() => setCount(count + 1)}>Increment</button>
-      {/* MemoizedMessage will only re-render if the 'text' prop changes */}
-      <MemoizedMessage text="This is a memoized message" />
-    </div>
-  );
-}
+    return (
+      <div>
+        <h1>Count: {count}</h1>
+        <button onClick={() => setCount(count + 1)}>Increment</button>
+        {/* MemoizedMessage will only re-render if the 'text' prop changes */}
+        <MemoizedMessage text="This is a memoized message" />
+      </div>
+    );
+  }
 
-export default App;
-```
+  export default App;
+  ```
 
   Purpose of React.memo:
 
@@ -130,60 +130,60 @@ export default App;
 
 - Use the `useContext` hook to access global data without passing props down through multiple components.
 - 使用useContext hook 存取全局数据， 防止组件层层传递props
-```js
-// Example of using useContext to access global data
-import React, { createContext, useContext, useState } from 'react';
+  ```js
+  // Example of using useContext to access global data
+  import React, { createContext, useContext, useState } from 'react';
 
-// Create a Context
-const UserContext = createContext();
+  // Create a Context
+  const UserContext = createContext();
 
-// A provider component to wrap the app and provide the context value
-function UserProvider({ children }) {
-  const [user, setUser] = useState({ name: 'John Doe', age: 30 });
+  // A provider component to wrap the app and provide the context value
+  function UserProvider({ children }) {
+    const [user, setUser] = useState({ name: 'John Doe', age: 30 });
 
-  return (
-    <UserContext.Provider value={{ user, setUser }}>
-      {children}
-    </UserContext.Provider>
-  );
-}
+    return (
+      <UserContext.Provider value={{ user, setUser }}>
+        {children}
+      </UserContext.Provider>
+    );
+  }
 
-// A component that consumes the context value
-function UserProfile() {
-  const { user } = useContext(UserContext);
+  // A component that consumes the context value
+  function UserProfile() {
+    const { user } = useContext(UserContext);
 
-  return (
-    <div>
-      <h1>User Profile</h1>
-      <p>Name: {user.name}</p>
-      <p>Age: {user.age}</p>
-    </div>
-  );
-}
+    return (
+      <div>
+        <h1>User Profile</h1>
+        <p>Name: {user.name}</p>
+        <p>Age: {user.age}</p>
+      </div>
+    );
+  }
 
-// A component that updates the context value
-function UpdateUser() {
-  const { setUser } = useContext(UserContext);
+  // A component that updates the context value
+  function UpdateUser() {
+    const { setUser } = useContext(UserContext);
 
-  return (
-    <button onClick={() => setUser({ name: 'Jane Doe', age: 25 })}>
-      Update User
-    </button>
-  );
-}
+    return (
+      <button onClick={() => setUser({ name: 'Jane Doe', age: 25 })}>
+        Update User
+      </button>
+    );
+  }
 
-// Main App component
-function App() {
-  return (
-    <UserProvider>
-      <UserProfile />
-      <UpdateUser />
-    </UserProvider>
-  );
-}
+  // Main App component
+  function App() {
+    return (
+      <UserProvider>
+        <UserProfile />
+        <UpdateUser />
+      </UserProvider>
+    );
+  }
 
-export default App;
-```
+  export default App;
+  ```
   Explanation:
   createContext:
 
