@@ -1,8 +1,6 @@
 # React coding guidelines
 
-This is a code style guide with best practices and additional notes on performance & optimizations.
-
-Following the style guide will help maintain consistency and readability of code across a project and team, which can improve code quality and reduce errors. It can also make it easier for new developers to onboard and understand the codebase.
+This is a code style guide with best practices and additional notes on performance & optimizations. Following the style guide will help maintain consistency and readability of code across a project and team, which can improve code quality and reduce errors. It can also make it easier for new developers to onboard and understand the codebase.
 
 ## Table of Contents
 
@@ -114,15 +112,11 @@ Following the style guide will help maintain consistency and readability of code
 
   export default App;
   ```
-
-  Purpose of React.memo:
-
-  React.memo is a higher-order component used to wrap functional components.
+    React.memo is a higher-order component used to wrap functional components.
   It performs a shallow comparison of the component's props and only re-renders the component if the props have changed.
-  Optimization in the Example:
 
-  The MemoizedMessage component is wrapped with React.memo, so even if the parent component App re-renders, MemoizedMessage will not re-render as long as the text prop remains unchanged.
-  The console.log in the example helps verify whether the component is being re-rendered.
+    The MemoizedMessage component is wrapped with React.memo, so even if the parent component App re-renders, MemoizedMessage will not re-render as long as the text prop remains unchanged.
+
   By using this approach, unnecessary re-renders can be avoided, improving performance.
 
 - Use the `useContext` hook to access global data without passing props down through multiple components.
@@ -189,9 +183,7 @@ Following the style guide will help maintain consistency and readability of code
 
   useContext: Used in UserProfile and UpdateUser components to access the user data and setUser function from the context.
 
-  `Benefits`:
-
-  Avoids prop drilling by allowing components to directly access global data without passing props through intermediate components.
+  `Benefits`: Avoids prop drilling by allowing components to directly access global data without passing props through intermediate components.
 
 - Use the `useCallback` hook to memoize callback functions and avoid unnecessary re-renders.
 - 使用`useCallback` 缓存函数，避免不必要的重新渲染.
@@ -233,7 +225,7 @@ Following the style guide will help maintain consistency and readability of code
   export default App;
   ```
   `Explanation`:
-  useCallback: useCallback is used to memoize the handleClick function so that it is not recreated on every render unless its dependencies change.
+  useCallback is used to memoize the handleClick function so that it is not recreated on every render unless its dependencies change.
   In this example, the dependency array is empty ([]), so the function remains the same across renders.
 
   Optimization: The ChildComponent is wrapped with React.memo, which prevents it from re-rendering unless its props change.
@@ -243,7 +235,7 @@ Following the style guide will help maintain consistency and readability of code
   Avoids creating a new function on every render, which can prevent unnecessary re-renders of child components.
   Improves performance in components with expensive re-renders or deep component trees.
 
-  - Avoid using anonymous arrow functions inside JSX tree as this can cause unnecessary re-renders of the component, since a new function is created on each render.
+ - Avoid using anonymous arrow functions inside JSX tree as this can cause unnecessary re-renders of the component, since a new function is created on each render.
   - 在JSX 中避免使用匿名箭头函数防止不必要的重新渲染
 
   ```js
