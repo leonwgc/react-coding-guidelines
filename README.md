@@ -19,7 +19,74 @@ Following the style guide will help maintain consistency and readability of code
 
 ## Basics
 - Use functional components instead of class components.
+- 优先使用函数组件，避免使用class组件
+  ```js
+  // bad
+  class MyComponent extends React.Component {
+    render() {
+      return <div>Hello</div>
+    }
+  }
+
+  // good
+  function MyComponent() {
+    return <div>Hello</div>
+  }
+  ```
 - Use the `useState` and useEffect hooks for managing component state and side effects.
+- 使用 `useState` 和 `useEffect` 钩子来管理组件状态和副作用
+
+```js
+// Bad Code Example:
+import React, { Component } from 'react';
+
+class MyComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      count: 0
+    };
+  }
+
+  componentDidMount() {
+    document.title = `Current Count: ${this.state.count}`;
+  }
+
+  componentDidUpdate() {
+    document.title = `Current Count: ${this.state.count}`;
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>Current Count: {this.state.count}</h1>
+        <button onClick={() => this.setState({ count: this.state.count + 1 })}>
+          Increment
+        </button>
+      </div>
+    );
+  }
+}
+
+// Good Code Example:
+import React, { useState, useEffect } from 'react';
+
+function MyComponent() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    document.title = `Current Count: ${count}`;
+  }, [count]);
+
+  return (
+    <div>
+      <h1>Current Count: {count}</h1>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+  ```
+
 - Use conditional rendering to control the display of components.
 - Use `React.memo` to memoize functional components for performance optimization.
 - Use the `useContext` hook to access global data without passing props down through multiple components.
@@ -44,7 +111,9 @@ function MyComponent(props) {
   )
 }
 
+
 ```
+
 
 This code has the following formatting issues:
 
