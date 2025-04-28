@@ -8,14 +8,16 @@ Following the style guide will help maintain consistency and readability of code
 
 - [React coding guidelines](#react-coding-guidelines)
   - [Table of Contents](#table-of-contents)
-  - [React](#react)
+  - [Basics](#basics)
       - [Examples](#examples)
         - [Bad Code Example:](#bad-code-example)
         - [Good Code Examples:](#good-code-examples)
     - [Performance \& Optimizations](#performance--optimizations)
+    - [Hooks](#hooks)
+    - [Accessibility](#accessibility)
 
 
-## React
+## Basics
 - Use functional components instead of class components.
 - Use the `useState` and useEffect hooks for managing component state and side effects.
 - Use conditional rendering to control the display of components.
@@ -28,7 +30,7 @@ Following the style guide will help maintain consistency and readability of code
 
 ##### Bad Code Example:
 
-```
+```js
 import React, { useState } from 'react';
 
 function MyComponent(props) {
@@ -52,7 +54,7 @@ Using an anonymous arrow function inside onClick can cause unnecessary re-render
 
 ##### Good Code Examples:
 
-```
+```js
 import React, { useState } from 'react';
 
 function MyComponent(props) {
@@ -103,3 +105,190 @@ The useState hook is used to manage the component's state, rather than directly 
 * Monitor performance: Use tools such as Google Analytics and New Relic to monitor the performance of your application and identify bottlenecks. This will allow you to make targeted optimizations to improve the overall performance of your application.
 
 * Test and debug: Use automated testing and debugging tools such as Jest, Enzyme, and React Developer Tools to ensure that your application is optimized and error-free.
+
+### Hooks
+* Only call Hooks at the top level, don't call them inside loops, conditions, or nested functions. (只在最顶层调用 Hooks，不要在循环、条件和嵌套函数中调用 Hooks)
+```js
+// bad - call Hooks inside conditions
+function ComponentWithConditionalHook() {
+  if (cond) {
+    useConditionalHook();
+  }
+}
+
+// bad - call Hooks inside loops
+function ComponentWithHookInsideLoop() {
+  while (cond) {
+    useHookInsideLoop();
+  }
+}
+
+// bad - call Hooks inside callback
+function ComponentWithHookInsideCallback() {
+  useEffect(() => {
+    useHookInsideCallback();
+  });
+}
+
+// good
+function ComponentWithHook() {
+  useHook();
+}```
+
+* Hook names must start with use and be camelCase (Hooks 命名必须以 use 开头，小驼峰形式)
+
+```js
+// bad
+const customHook = () => {}
+
+// good
+const useCustomHook = () => {}
+```
+
+* Only call Hooks in React function components and custom Hooks, not in regular JavaScript functions. (只在 React 函数组件和自定义 Hooks 中调用 Hooks，不能在普通的 JavaScript 函数中调用 Hooks。)
+
+```js
+// bad - call Hooks inside class componennt
+class ClassComponentWithHook extends React.Component {
+  render() {
+    React.useState();
+  }
+}
+
+// bad - call Hooks inside normal function
+function normalFunctionWithHook() {
+  useHookInsideNormalFunction();
+}
+
+// good - call Hooks inside function component
+function ComponentWithHook() {
+  useHook();
+}
+
+// good - call Hooks inside custom Hooks
+function useHookWithHook() {
+  useHook();
+}
+```
+
+* useEffect and similar Hooks should include all dependencies in the dependency array (useEffect 及类似 Hooks 需要声明所有依赖)
+
+```js
+// bad
+function MyComponent() {
+  const local = {};
+  useEffect(() => {
+    console.log(local);
+  }, []);
+}
+
+// good
+function MyComponent() {
+  const local = {};
+  useEffect(() => {
+    console.log(local);
+  }, [local]);
+}
+```
+
+
+### Accessibility
+
+* The img tag should include an alt attribute ( img 标签应包含 alt 属性)
+
+```js
+  // bad
+<img src="hello.jpg" />
+
+// good
+<img src="hello.jpg" alt="Me waving hello" />
+
+// good - 图片无需被无障碍阅读器识别时
+<button>
+  <img src="icon.png" alt="" />
+  Save
+</button>
+  ```
+
+* Do not use keywords like "image," "photo," or "picture" in the alt attribute of the img tag. Screen readers already identify img elements as images, so including such keywords in the alt attribute is unnecessary. (img 标签的 alt 属性不要使用 "image"，"photo"，"picture" 之类的关键词. 屏幕阅读器已会将 img 元素识别成图片，再在 alt 中包含这类关键词没有意义。)
+
+```js
+// bad
+<img src="hello.jpg" alt="Picture of me waving hello" />
+
+// good
+<img src="hello.jpg" alt="Me waving hello" />
+```
+
+* Anchor elements (i.e. <a> elements) must contain content and the content must be visible to screen readers (锚元素(即 <a> 元素)必须含有内容，且内容必须对屏幕阅读器可见(这里指内容不能通过设置)
+
+```js
+// bad - empty content
+<a />
+
+// bad - content not accessible to screen readers
+<a><TextWrapper aria-hidden /></a>
+
+// good
+<a>Anchor Content!</a>
+<a><TextWrapper /><a>
+```
+
+* Do not use invalid ARIA attributes, only use the aria-* attributes listed in the WAI-ARIA States and Properties spec. (禁止使用无效的 ARIA 属性，只能使用列在 WAI-ARIA States and Properties spec 中的 aria-* 属性)
+
+```js
+// bad - Labeled using incorrectly spelled aria-labeledby
+<div id="address_label">Enter your address</div>
+<input aria-labeledby="address_label">
+
+// good - Labeled using correctly spelled aria-labelledby
+<div id="address_label">Enter your address</div>
+<input aria-labelledby="address_label">
+
+```
+
+* ARIA attributes and states must have valid values. (ARIA 属性、状态的值必须为有效值。)
+
+```js
+// bad - the aria-hidden state is of type true/false
+<span aria-hidden="yes">foo</span>
+
+// good
+<span aria-hidden="true">foo</span>
+```
+
+* Do not add role or aria-* attributes to specific elements. Some reserved DOM elements do not support setting ARIA roles or attributes, usually because they are not visible, such as meta, html, script, style
+(禁止特定元素包含 role 和 aria-* 属性。一些保留的 DOM 元素不支持设置 ARIA 角色或者属性，通常是因为这些元素是不可见的，例如 meta, html, script, style)
+
+```js
+// bad - the meta element should not be given any ARIA attributes
+<meta charset="UTF-8" aria-hidden="false" />
+
+// good
+<meta charset="UTF-8" />
+```
+
+* Only use valid, non-abstract ARIA roles (仅使用有效的、非抽象的 ARIA roles)
+
+```js
+// bad - not an ARIA role
+<div role="datepicker" />
+
+// bad - abstract ARIA role
+<div role="range" />
+
+// good
+<div role="button" />
+```
+
+* Elements with an ARIA role must also declare the properties required by that role (有 ARIA role 的元素必须也声明该 role 需要的属性)
+
+```js
+// bad - the checkbox role requires the aria-checked state
+<span role="checkbox" aria-labelledby="foo" tabindex="0"></span>
+
+// good - the checkbox role requires the aria-checked state
+<span role="checkbox" aria-checked="false" aria-labelledby="foo" tabindex="0"></span>
+```
+
+
