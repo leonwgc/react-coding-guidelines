@@ -4,13 +4,20 @@ This is a code style guide with best practices and additional notes on performan
 
 - [React coding guidelines](#react-coding-guidelines)
   - [Basics](#basics)
+    - [Use functional components instead of class components.](#use-functional-components-instead-of-class-components)
+    - [Use the `useState` and `useEffect` hooks for managing component state and side effects.](#use-the-usestate-and-useeffect-hooks-for-managing-component-state-and-side-effects)
+    - [Use `React.memo` to memoize functional components for performance optimization.](#use-reactmemo-to-memoize-functional-components-for-performance-optimization)
+    - [Use the `useContext` hook to access global data without passing props down through multiple components.](#use-the-usecontext-hook-to-access-global-data-without-passing-props-down-through-multiple-components)
+    - [Use the `useCallback` hook to memoize callback functions and avoid unnecessary re-renders.](#use-the-usecallback-hook-to-memoize-callback-functions-and-avoid-unnecessary-re-renders)
+    - [Avoid using anonymous arrow functions inside JSX tree as this can cause unnecessary re-renders of the component, since a new function is created on each render.](#avoid-using-anonymous-arrow-functions-inside-jsx-tree-as-this-can-cause-unnecessary-re-renders-of-the-component-since-a-new-function-is-created-on-each-render)
+    - [Use the `useMemo` hook to cache the result of a calculation between re-renders.](#use-the-usememo-hook-to-cache-the-result-of-a-calculation-between-re-renders)
   - [Performance \& Optimizations](#performance--optimizations)
   - [Hooks](#hooks)
   - [Accessibility](#accessibility)
 
 ## Basics
-- Use functional components instead of class components.
-- 优先使用函数组件，避免使用类组件
+### Use functional components instead of class components.
+优先使用函数组件，避免使用类组件
   ```js
   // bad
   class MyComponent extends React.Component {
@@ -24,8 +31,8 @@ This is a code style guide with best practices and additional notes on performan
     return <div>Hello</div>
   }
   ```
-- Use the `useState` and `useEffect` hooks for managing component state and side effects.
-- 使用 `useState` 和 `useEffect` 钩子来管理组件状态和副作用
+### Use the `useState` and `useEffect` hooks for managing component state and side effects.
+ 使用 `useState` 和 `useEffect` 钩子来管理组件状态和副作用
 
   ```js
   // Bad Code Example:
@@ -76,10 +83,10 @@ This is a code style guide with best practices and additional notes on performan
       </div>
     );
   }
-    ```
+  ```
 
-- Use `React.memo` to memoize functional components for performance optimization.
-- 使用 `React.memo` 来优化性能，避免不必要的重新渲染
+ ### Use `React.memo` to memoize functional components for performance optimization.
+ 使用 `React.memo` 来优化性能，避免不必要的重新渲染
   ```js
   // Example of using React.memo to optimize performance
   import React from 'react';
@@ -115,8 +122,8 @@ This is a code style guide with best practices and additional notes on performan
 
   By using this approach, unnecessary re-renders can be avoided, improving performance.
 
-- Use the `useContext` hook to access global data without passing props down through multiple components.
-- 使用useContext hook 存取全局数据， 防止组件层层传递props
+### Use the `useContext` hook to access global data without passing props down through multiple components.
+ 使用useContext hook 存取全局数据， 防止组件层层传递props
   ```js
   // Example of using useContext to access global data
   import React, { createContext, useContext, useState } from 'react';
@@ -181,8 +188,8 @@ This is a code style guide with best practices and additional notes on performan
 
   `Benefits`: Avoids prop drilling by allowing components to directly access global data without passing props through intermediate components.
 
-- Use the `useCallback` hook to memoize callback functions and avoid unnecessary re-renders.
-- 使用`useCallback` 缓存函数，避免不必要的重新渲染.
+### Use the `useCallback` hook to memoize callback functions and avoid unnecessary re-renders.
+ 使用`useCallback` 缓存函数，避免不必要的重新渲染.
   ```js
     // Example of using useCallback to memoize functions
   import React, { useState, useCallback } from 'react';
@@ -231,8 +238,8 @@ This is a code style guide with best practices and additional notes on performan
   Avoids creating a new function on every render, which can prevent unnecessary re-renders of child components.
   Improves performance in components with expensive re-renders or deep component trees.
 
- - Avoid using anonymous arrow functions inside JSX tree as this can cause unnecessary re-renders of the component, since a new function is created on each render.
- - 在JSX 中避免使用匿名箭头函数防止不必要的重新渲染
+ ### Avoid using anonymous arrow functions inside JSX tree as this can cause unnecessary re-renders of the component, since a new function is created on each render.
+  在JSX 中避免使用匿名箭头函数防止不必要的重新渲染
 
   ```js
     // bad
@@ -274,8 +281,8 @@ This is a code style guide with best practices and additional notes on performan
 
   export default Counter;
   ```
-- Use the `useMemo` hook to cache the result of a calculation between re-renders.
-- 使用`useMemo` 缓存计算结果，避免重新计算.
+### Use the `useMemo` hook to cache the result of a calculation between re-renders.
+ 使用`useMemo` 缓存计算结果，避免重新计算.
   ```js
   import React, { useState, useMemo } from 'react';
 
