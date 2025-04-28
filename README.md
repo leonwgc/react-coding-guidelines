@@ -145,7 +145,8 @@ const customHook = () => {}
 const useCustomHook = () => {}
 ```
 
-* Only call Hooks in React function components and custom Hooks, not in regular JavaScript functions. (只在 React 函数组件和自定义 Hooks 中调用 Hooks，不能在普通的 JavaScript 函数中调用 Hooks。)
+* Only call Hooks in React function components and custom Hooks, not in regular JavaScript functions.
+* 只在 React 函数组件和自定义 Hooks 中调用 Hooks，不能在普通的 JavaScript 函数中调用 Hooks。
 
 ```js
 // bad - call Hooks inside class componennt
@@ -171,7 +172,8 @@ function useHookWithHook() {
 }
 ```
 
-* useEffect and similar Hooks should include all dependencies in the dependency array (useEffect 及类似 Hooks 需要声明所有依赖)
+* useEffect and similar Hooks should include all dependencies in the dependency array
+* useEffect 及类似 Hooks 需要声明所有依赖项在依赖项数组中
 
 ```js
 // bad
@@ -194,7 +196,8 @@ function MyComponent() {
 
 ### Accessibility
 
-* The img tag should include an alt attribute ( img 标签应包含 alt 属性)
+* The img tag should include an alt attribute
+* img 标签应包含 alt 属性
 
 ```js
   // bad
@@ -210,7 +213,8 @@ function MyComponent() {
 </button>
   ```
 
-* Do not use keywords like "image," "photo," or "picture" in the alt attribute of the img tag. Screen readers already identify img elements as images, so including such keywords in the alt attribute is unnecessary. (img 标签的 alt 属性不要使用 "image"，"photo"，"picture" 之类的关键词. 屏幕阅读器已会将 img 元素识别成图片，再在 alt 中包含这类关键词没有意义。)
+* Do not use keywords like "image," "photo," or "picture" in the alt attribute of the img tag. Screen readers already identify img elements as images, so including such keywords in the alt attribute is unnecessary.
+* img 标签的 alt 属性不要使用 "image"，"photo"，"picture" 之类的关键词. 屏幕阅读器已会将 img 元素识别成图片，再在 alt 中包含这类关键词没有意义。
 
 ```js
 // bad
@@ -220,7 +224,8 @@ function MyComponent() {
 <img src="hello.jpg" alt="Me waving hello" />
 ```
 
-* Anchor elements (i.e. <a> elements) must contain content and the content must be visible to screen readers (锚元素(即 <a> 元素)必须含有内容，且内容必须对屏幕阅读器可见(这里指内容不能通过设置)
+* Anchor elements (i.e. <a> elements) must contain content and the content must be visible to screen readers
+* 锚元素(即 <a> 元素)必须含有内容，且内容必须对屏幕阅读器可见
 
 ```js
 // bad - empty content
@@ -234,7 +239,8 @@ function MyComponent() {
 <a><TextWrapper /><a>
 ```
 
-* Do not use invalid ARIA attributes, only use the aria-* attributes listed in the WAI-ARIA States and Properties spec. (禁止使用无效的 ARIA 属性，只能使用列在 WAI-ARIA States and Properties spec 中的 aria-* 属性)
+* Do not use invalid ARIA attributes, only use the aria-* attributes listed in the WAI-ARIA States and Properties spec.
+* 禁止使用无效的 ARIA 属性，只能使用列在 WAI-ARIA States and Properties spec 中的 aria-* 属性
 
 ```js
 // bad - Labeled using incorrectly spelled aria-labeledby
@@ -247,7 +253,8 @@ function MyComponent() {
 
 ```
 
-* ARIA attributes and states must have valid values. (ARIA 属性、状态的值必须为有效值。)
+* ARIA attributes and states must have valid values.
+* ARIA 属性、状态的值必须为有效值。
 
 ```js
 // bad - the aria-hidden state is of type true/false
@@ -258,7 +265,7 @@ function MyComponent() {
 ```
 
 * Do not add role or aria-* attributes to specific elements. Some reserved DOM elements do not support setting ARIA roles or attributes, usually because they are not visible, such as meta, html, script, style
-(禁止特定元素包含 role 和 aria-* 属性。一些保留的 DOM 元素不支持设置 ARIA 角色或者属性，通常是因为这些元素是不可见的，例如 meta, html, script, style)
+* 禁止特定元素包含 role 和 aria-* 属性。一些保留的 DOM 元素不支持设置 ARIA 角色或者属性，通常是因为这些元素是不可见的，例如 meta, html, script, style
 
 ```js
 // bad - the meta element should not be given any ARIA attributes
@@ -268,7 +275,8 @@ function MyComponent() {
 <meta charset="UTF-8" />
 ```
 
-* Only use valid, non-abstract ARIA roles (仅使用有效的、非抽象的 ARIA roles)
+* Only use valid, non-abstract ARIA roles
+* 仅使用有效的、非抽象的 ARIA roles
 
 ```js
 // bad - not an ARIA role
@@ -281,7 +289,8 @@ function MyComponent() {
 <div role="button" />
 ```
 
-* Elements with an ARIA role must also declare the properties required by that role (有 ARIA role 的元素必须也声明该 role 需要的属性)
+* Elements with an ARIA role must also declare the properties required by that role
+* 有 ARIA role 的元素必须也声明该 role 需要的属性
 
 ```js
 // bad - the checkbox role requires the aria-checked state
