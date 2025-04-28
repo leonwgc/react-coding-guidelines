@@ -75,13 +75,11 @@ This is a code style guide with best practices and additional notes on performan
 
   export default App;
   ```
-    React.memo is a higher-order component used to wrap functional components.
+
+   React.memo is a higher-order component used to wrap functional components.
   It performs a shallow comparison of the component's props and only re-renders the component if the props have changed.
 
-    The MemoizedMessage component is wrapped with React.memo, so even if the parent component App re-renders, MemoizedMessage will not re-render as long as the text prop remains unchanged.
-
-  By using this approach, unnecessary re-renders can be avoided, improving performance.
-
+  The MemoizedMessage component is wrapped with React.memo, so even if the parent component App re-renders, MemoizedMessage will not re-render as long as the text prop remains unchanged.
 
  ### Avoid using anonymous arrow functions inside JSX tree as this can cause unnecessary re-renders of the component, since a new function is created on each render.
   在JSX 中避免使用匿名箭头函数防止不必要的重新渲染
