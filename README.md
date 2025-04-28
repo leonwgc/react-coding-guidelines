@@ -181,21 +181,64 @@ Following the style guide will help maintain consistency and readability of code
 
   export default App;
   ```
-  Explanation:
-  createContext:
+  `Explanation`:
+  createContext: Creates a context object (UserContext) to hold global data.
+  UserProvider: A provider component that wraps the app and provides the context value (user and setUser) to all child components.
+  useContext: Used in UserProfile and UpdateUser components to access the user data and setUser function from the context.
 
-  Creates a context object (UserContext) to hold global data.
-  UserProvider:
-
-  A provider component that wraps the app and provides the context value (user and setUser) to all child components.
-  useContext:
-
-  Used in UserProfile and UpdateUser components to access the user data and setUser function from the context.
-  Benefits:
-
+  `Benefits`:
   Avoids prop drilling by allowing components to directly access global data without passing props through intermediate components.
+  
 - Use the `useCallback` hook to memoize callback functions and avoid unnecessary re-renders.
-- Avoid using anonymous arrow functions inside JSX tree as this can cause unnecessary re-renders of the component, since a new function is created on each render.
+- 使用`useCallback` 缓存函数，避免不必要的重新渲染.
+  ```js
+    // Example of using useCallback to memoize functions
+  import React, { useState, useCallback } from 'react';
+
+  // A child component that receives a callback as a prop
+  const ChildComponent = React.memo(({ onClick }) => {
+    console.log('ChildComponent rendered');
+    return <button onClick={onClick}>Click Me</button>;
+  });
+
+  function App() {
+    const [count, setCount] = useState(0);
+    const [text, setText] = useState('');
+
+    // Memoize the callback to prevent unnecessary re-renders of ChildComponent
+    const handleClick = useCallback(() => {
+      console.log('Button clicked');
+    }, []);
+
+    return (
+      <div>
+        <h1>Count: {count}</h1>
+        <button onClick={() => setCount(count + 1)}>Increment Count</button>
+        <input
+          type="text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Type something"
+        />
+        {/* Pass the memoized callback to the child component */}
+        <ChildComponent onClick={handleClick} />
+      </div>
+    );
+  }
+
+  export default App;
+  ```
+  `Explanation`:
+  `useCallback`: useCallback is used to memoize the handleClick function so that it is not recreated on every render unless its dependencies change.
+  In this example, the dependency array is empty ([]), so the function remains the same across renders.
+  Optimization:
+
+  The ChildComponent is wrapped with React.memo, which prevents it from re-rendering unless its props change.
+  Since the handleClick function is memoized, ChildComponent will not re-render unnecessarily when the parent component updates.
+  `Benefits`:
+  Avoids creating a new function on every render, which can prevent unnecessary re-renders of child components.
+  Improves performance in components with expensive re-renders or deep component trees.
+  - Avoid using anonymous arrow functions inside JSX tree as this can cause unnecessary re-renders of the component, since a new function is created on each render.
 
 ### Performance & Optimizations
 
