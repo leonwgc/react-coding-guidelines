@@ -309,7 +309,8 @@ This is a code style guide with best practices and additional notes on performan
 * Test and debug: Use automated testing and debugging tools such as Jest, Enzyme, and React Developer Tools to ensure that your application is optimized and error-free.
 
 ### Hooks
-* Only call Hooks at the top level, don't call them inside loops, conditions, or nested functions. (只在最顶层调用 Hooks，不要在循环、条件和嵌套函数中调用 Hooks)
+* Only call Hooks at the top level, don't call them inside loops, conditions, or nested functions.
+* 只在最顶层调用 Hooks，不要在循环、条件和嵌套函数中调用 Hooks
 ```js
 // bad - call Hooks inside conditions
 function ComponentWithConditionalHook() {
@@ -426,8 +427,8 @@ function MyComponent() {
 <img src="hello.jpg" alt="Me waving hello" />
 ```
 
-* Anchor elements (i.e. <a> elements) must contain content and the content must be visible to screen readers
-* 锚元素(即 <a> 元素)必须含有内容，且内容必须对屏幕阅读器可见
+* Anchor elements (i.e. a elements) must contain content and the content must be visible to screen readers
+* 锚元素(即 a 元素)必须含有内容，且内容必须对屏幕阅读器可见
 
 ```js
 // bad - empty content
