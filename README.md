@@ -5,9 +5,12 @@ This is a code style guide with best practices and additional notes on performan
 - [React coding guidelines](#react-coding-guidelines)
   - [Basics](#basics)
     - [Use functional components instead of class components.](#use-functional-components-instead-of-class-components)
+    - [Avoid using anonymous arrow functions inside JSX tree](#avoid-using-anonymous-arrow-functions-inside-jsx-tree)
+  - [React / Redux Performance \& Optimizations](#react--redux-performance--optimizations)
+    - [Use the latest versions of React and Redux](#use-the-latest-versions-of-react-and-redux)
+    - [Use the useSelector and useDispatch hooks](#use-the-useselector-and-usedispatch-hooks)
+    - [Use lazy loading](#use-lazy-loading)
     - [Use `React.memo` to memoize functional components for performance optimization.](#use-reactmemo-to-memoize-functional-components-for-performance-optimization)
-    - [Avoid using anonymous arrow functions inside JSX tree as this can cause unnecessary re-renders of the component, since a new function is created on each render.](#avoid-using-anonymous-arrow-functions-inside-jsx-tree-as-this-can-cause-unnecessary-re-renders-of-the-component-since-a-new-function-is-created-on-each-render)
-  - [Performance \& Optimizations](#performance--optimizations)
   - [Hooks](#hooks)
     - [Only call Hooks at the top level, don't call them inside loops, conditions, or nested functions.](#only-call-hooks-at-the-top-level-dont-call-them-inside-loops-conditions-or-nested-functions)
     - [Only call Hooks in React function components and custom Hooks, not in regular JavaScript functions.](#only-call-hooks-in-react-function-components-and-custom-hooks-not-in-regular-javascript-functions)
@@ -45,43 +48,8 @@ This is a code style guide with best practices and additional notes on performan
   }
   ```
 
- ### Use `React.memo` to memoize functional components for performance optimization.
- 使用 `React.memo` 来优化性能，避免不必要的重新渲染
-  ```js
-  // Example of using React.memo to optimize performance
-  import React from 'react';
-
-  // A functional component that renders a simple message
-  function Message({ text }) {
-    console.log('Message component rendered');
-    return <p>{text}</p>;
-  }
-
-  // Wrapping the component with React.memo to prevent unnecessary re-renders
-  const MemoizedMessage = React.memo(Message);
-
-  function App() {
-    const [count, setCount] = React.useState(0);
-
-    return (
-      <div>
-        <h1>Count: {count}</h1>
-        <button onClick={() => setCount(count + 1)}>Increment</button>
-        {/* MemoizedMessage will only re-render if the 'text' prop changes */}
-        <MemoizedMessage text="This is a memoized message" />
-      </div>
-    );
-  }
-
-  export default App;
-  ```
-
-   React.memo is a higher-order component used to wrap functional components.
-  It performs a shallow comparison of the component's props and only re-renders the component if the props have changed.
-
-  The MemoizedMessage component is wrapped with React.memo, so even if the parent component App re-renders, MemoizedMessage will not re-render as long as the text prop remains unchanged.
-
- ### Avoid using anonymous arrow functions inside JSX tree as this can cause unnecessary re-renders of the component, since a new function is created on each render.
+ ### Avoid using anonymous arrow functions inside JSX tree
+  as this can cause unnecessary re-renders of the component, since a new function is created on each render.
   在JSX 中避免使用匿名箭头函数防止不必要的重新渲染
 
   ```js
@@ -125,34 +93,117 @@ This is a code style guide with best practices and additional notes on performan
   export default Counter;
   ```
 
-## Performance & Optimizations
+## React / Redux Performance & Optimizations
 
- List of guidelines on how to write an optimized for performance React / Redux application:
+### Use the latest versions of React and Redux
 
+### Use the useSelector and useDispatch hooks
+1. useSelector and useDispatch provide a concise and modern way to interact with the Redux store, replacing the older connect HOC.
+2. They improve readability and reduce boilerplate code.
+```js
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
-* Use the latest versions of React and Redux: Always make sure you are using the late
+// Redux slice (for demonstration purposes)
+const initialState = { count: 0 };
 
-* Use the useSelector and useDispatch hooks: Use the useSelector and useDispatch hooks provided by React-Redux to optimize your data flow. These hooks use the useSelector and useDispatch functions from Redux internally and provide a more concise syntax.
+function counterReducer(state = initialState, action) {
+  switch (action.type) {
+    case 'increment':
+      return { ...state, count: state.count + 1 };
+    case 'decrement':
+      return { ...state, count: state.count - 1 };
+    default:
+      return state;
+  }
+}
 
-* Use memoized selectors: Use memoized selectors to avoid unnecessary computations and re-renders. Memoization is a technique of caching the results of a function so that it can be returned without re-computing if the input arguments remain the same.
+// Action creators
+const increment = () => ({ type: 'increment' });
+const decrement = () => ({ type: 'decrement' });
 
-* Normalize your Redux state: Normalize your Redux state to optimize data retrieval and management. Normalization is a technique of structuring your state in a way that allows you to easily query it and avoid unnecessary computations.
+function Counter() {
+  // Access state using useSelector
+  const count = useSelector((state) => state.count);
 
-* Use lazy loading: Use lazy loading to improve the initial load time of your application. Lazy loading is a technique of deferring the loading of non-critical parts of your application until they are actually needed.
+  // Dispatch actions using useDispatch
+  const dispatch = useDispatch();
 
-* Optimize images and media: Optimize your images and media by compressing them and using optimized formats such as WebP. Also, consider using lazy loading to defer the loading of images until they are needed.
+  return (
+    <div>
+      <h1>Count: {count}</h1>
+      <button onClick={() => dispatch(increment())}>Increment</button>
+      <button onClick={() => dispatch(decrement())}>Decrement</button>
+    </div>
+  );
+}
 
-* Use server-side rendering: Use server-side rendering to improve the initial load time of your application. Server-side rendering is a technique of rendering your application on the server and sending the HTML to the client, which can be displayed immediately.
+export default Counter;
+```
 
-* Use code splitting: Use code splitting to reduce the size of your JavaScript bundle and improve the initial load time of your application. Code splitting is a technique of splitting your JavaScript code into smaller chunks that can be loaded on demand.
+### Use lazy loading
+1. Use lazy loading to improve the initial load time of your application.
+2. Lazy loading is a technique of deferring the loading of non-critical parts of your application until they are actually needed.
+3.
+  ```js
+    import React, { Suspense } from 'react';
 
-* Use caching: Use caching to improve the performance of your application by avoiding unnecessary network requests. Caching is a technique of storing the results of network requests so that they can be returned immediately if the same request is made again.
+  // Lazy load the component
+  const LazyLoadedComponent = React.lazy(() => import('./LazyLoadedComponent'));
 
-* Use compression: Use compression to reduce the size of your network requests and improve the performance of your application. Compression is a technique of compressing your network requests so that they can be transferred more quickly.
+  function App() {
+    return (
+      <div>
+        <h1>Welcome to the App</h1>
+        {/* Use Suspense to show a fallback while the component is being loaded */}
+        <Suspense fallback={<div>Loading...</div>}>
+          <LazyLoadedComponent />
+        </Suspense>
+      </div>
+    );
+  }
 
-* Monitor performance: Use tools such as Google Analytics and New Relic to monitor the performance of your application and identify bottlenecks. This will allow you to make targeted optimizations to improve the overall performance of your application.
+  export default App;
+  ```
+1. React.lazy: Dynamically imports the LazyLoadedComponent only when it is needed.This reduces the initial bundle size, improving the application's load time.
+2. Suspense: Wraps the lazy-loaded component and provides a fallback UI (e.g., a loading spinner or message) while the component is being loaded.
 
-* Test and debug: Use automated testing and debugging tools such as Jest, Enzyme, and React Developer Tools to ensure that your application is optimized and error-free.
+### Use `React.memo` to memoize functional components for performance optimization.
+ 使用 `React.memo` 来优化性能，避免不必要的重新渲染
+  ```js
+  // Example of using React.memo to optimize performance
+  import React from 'react';
+
+  // A functional component that renders a simple message
+  function Message({ text }) {
+    console.log('Message component rendered');
+    return <p>{text}</p>;
+  }
+
+  // Wrapping the component with React.memo to prevent unnecessary re-renders
+  const MemoizedMessage = React.memo(Message);
+
+  function App() {
+    const [count, setCount] = React.useState(0);
+
+    return (
+      <div>
+        <h1>Count: {count}</h1>
+        <button onClick={() => setCount(count + 1)}>Increment</button>
+        {/* MemoizedMessage will only re-render if the 'text' prop changes */}
+        <MemoizedMessage text="This is a memoized message" />
+      </div>
+    );
+  }
+
+  export default App;
+  ```
+
+   React.memo is a higher-order component used to wrap functional components.
+  It performs a shallow comparison of the component's props and only re-renders the component if the props have changed.
+
+  The MemoizedMessage component is wrapped with React.memo, so even if the parent component App re-renders, MemoizedMessage will not re-render as long as the text prop remains unchanged.
+
 
 ## Hooks
 ### Only call Hooks at the top level, don't call them inside loops, conditions, or nested functions.
