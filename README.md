@@ -7,10 +7,9 @@ This is a code style guide with best practices and additional notes on performan
 - [React coding guidelines](#react-coding-guidelines)
   - [Table of Contents](#table-of-contents)
   - [Basics](#basics)
-    - [Performance \& Optimizations](#performance--optimizations)
-    - [Hooks](#hooks)
-    - [Accessibility](#accessibility)
-
+  - [Performance \& Optimizations](#performance--optimizations)
+  - [Hooks](#hooks)
+  - [Accessibility](#accessibility)
 
 ## Basics
 - Use functional components instead of class components.
@@ -279,7 +278,7 @@ This is a code style guide with best practices and additional notes on performan
   export default Counter;
   ```
 
-### Performance & Optimizations
+## Performance & Optimizations
 
  List of guidelines on how to write an optimized for performance React / Redux application:
 
@@ -308,7 +307,7 @@ This is a code style guide with best practices and additional notes on performan
 
 * Test and debug: Use automated testing and debugging tools such as Jest, Enzyme, and React Developer Tools to ensure that your application is optimized and error-free.
 
-### Hooks
+## Hooks
 * Only call Hooks at the top level, don't call them inside loops, conditions, or nested functions.
 * 只在最顶层调用 Hooks，不要在循环、条件和嵌套函数中调用 Hooks
 ```js
@@ -397,7 +396,7 @@ function MyComponent() {
 ```
 
 
-### Accessibility
+## Accessibility
 
 * The img tag should include an alt attribute
 * img 标签应包含 alt 属性
