@@ -10,7 +10,7 @@ This is a code style guide with best practices and additional notes on performan
 
 ## Basics
 - Use functional components instead of class components.
-- 优先使用函数组件，避免使用class组件
+- 优先使用函数组件，避免使用类组件
   ```js
   // bad
   class MyComponent extends React.Component {
@@ -232,7 +232,7 @@ This is a code style guide with best practices and additional notes on performan
   Improves performance in components with expensive re-renders or deep component trees.
 
  - Avoid using anonymous arrow functions inside JSX tree as this can cause unnecessary re-renders of the component, since a new function is created on each render.
-  - 在JSX 中避免使用匿名箭头函数防止不必要的重新渲染
+ - 在JSX 中避免使用匿名箭头函数防止不必要的重新渲染
 
   ```js
     // bad
@@ -274,6 +274,48 @@ This is a code style guide with best practices and additional notes on performan
 
   export default Counter;
   ```
+- Use the `useMemo` hook to cache the result of a calculation between re-renders.
+- 使用`useMemo` 缓存计算结果，避免重新计算.
+  ```js
+  import React, { useState, useMemo } from 'react';
+
+  function ExpensiveCalculationComponent() {
+    const [count, setCount] = useState(0);
+    const [text, setText] = useState('');
+
+    // Use useMemo to cache the result of an expensive calculation
+    const expensiveCalculation = useMemo(() => {
+      console.log('Performing expensive calculation...');
+      let result = 0;
+      for (let i = 0; i < 1000000000; i++) {
+        result += i;
+      }
+      return result;
+    }, [count]); // Recalculate only when `count` changes
+
+    return (
+      <div>
+        <h1>Expensive Calculation Result: {expensiveCalculation}</h1>
+        <button onClick={() => setCount(count + 1)}>Increment Count</button>
+        <input
+          type="text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Type something"
+        />
+      </div>
+    );
+  }
+
+  export default ExpensiveCalculationComponent;
+ ```
+
+1. The useMemo hook is used to memoize the result of the expensive calculation.The calculation is only re-executed when the count dependency changes.
+
+2. Without useMemo, the expensive calculation would run on every render, even when unrelated state (like text) changes.
+
+3. With useMemo, the calculation is skipped unless count changes, improving performance.
+
 
 ## Performance & Optimizations
 
