@@ -33,7 +33,7 @@ Following the style guide will help maintain consistency and readability of code
     return <div>Hello</div>
   }
   ```
-- Use the `useState` and useEffect hooks for managing component state and side effects.
+- Use the `useState` and `useEffect` hooks for managing component state and side effects.
 - 使用 `useState` 和 `useEffect` 钩子来管理组件状态和副作用
 
 ```js
@@ -118,15 +118,15 @@ function App() {
 export default App;
 ```
 
-Purpose of React.memo:
+  Purpose of React.memo:
 
-React.memo is a higher-order component used to wrap functional components.
-It performs a shallow comparison of the component's props and only re-renders the component if the props have changed.
-Optimization in the Example:
+  React.memo is a higher-order component used to wrap functional components.
+  It performs a shallow comparison of the component's props and only re-renders the component if the props have changed.
+  Optimization in the Example:
 
-The MemoizedMessage component is wrapped with React.memo, so even if the parent component App re-renders, MemoizedMessage will not re-render as long as the text prop remains unchanged.
-The console.log in the example helps verify whether the component is being re-rendered.
-By using this approach, unnecessary re-renders can be avoided, improving performance.
+  The MemoizedMessage component is wrapped with React.memo, so even if the parent component App re-renders, MemoizedMessage will not re-render as long as the text prop remains unchanged.
+  The console.log in the example helps verify whether the component is being re-rendered.
+  By using this approach, unnecessary re-renders can be avoided, improving performance.
 
 - Use the `useContext` hook to access global data without passing props down through multiple components.
 - 使用useContext hook 存取全局数据， 防止组件层层传递props
@@ -184,6 +184,19 @@ function App() {
 
 export default App;
 ```
+  Explanation:
+  createContext:
+
+  Creates a context object (UserContext) to hold global data.
+  UserProvider:
+
+  A provider component that wraps the app and provides the context value (user and setUser) to all child components.
+  useContext:
+
+  Used in UserProfile and UpdateUser components to access the user data and setUser function from the context.
+  Benefits:
+
+  Avoids prop drilling by allowing components to directly access global data without passing props through intermediate components.
 - Use the `useCallback` hook to memoize callback functions and avoid unnecessary re-renders.
 - Avoid using anonymous arrow functions inside JSX tree as this can cause unnecessary re-renders of the component, since a new function is created on each render.
 
