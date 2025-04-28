@@ -87,8 +87,47 @@ function MyComponent() {
 }
   ```
 
-- Use conditional rendering to control the display of components.
 - Use `React.memo` to memoize functional components for performance optimization.
+- 使用 `React.memo` 来优化性能，避免不必要的重新渲染
+```js
+// Example of using React.memo to optimize performance
+import React from 'react';
+
+// A functional component that renders a simple message
+function Message({ text }) {
+  console.log('Message component rendered');
+  return <p>{text}</p>;
+}
+
+// Wrapping the component with React.memo to prevent unnecessary re-renders
+const MemoizedMessage = React.memo(Message);
+
+function App() {
+  const [count, setCount] = React.useState(0);
+
+  return (
+    <div>
+      <h1>Count: {count}</h1>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+      {/* MemoizedMessage will only re-render if the 'text' prop changes */}
+      <MemoizedMessage text="This is a memoized message" />
+    </div>
+  );
+}
+
+export default App;
+```
+
+Purpose of React.memo:
+
+React.memo is a higher-order component used to wrap functional components.
+It performs a shallow comparison of the component's props and only re-renders the component if the props have changed.
+Optimization in the Example:
+
+The MemoizedMessage component is wrapped with React.memo, so even if the parent component App re-renders, MemoizedMessage will not re-render as long as the text prop remains unchanged.
+The console.log in the example helps verify whether the component is being re-rendered.
+By using this approach, unnecessary re-renders can be avoided, improving performance.
+
 - Use the `useContext` hook to access global data without passing props down through multiple components.
 - Use the `useCallback` hook to memoize callback functions and avoid unnecessary re-renders.
 - Avoid using anonymous arrow functions inside JSX tree as this can cause unnecessary re-renders of the component, since a new function is created on each render.
