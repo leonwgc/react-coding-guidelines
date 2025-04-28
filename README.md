@@ -5,17 +5,17 @@ This is a code style guide with best practices and additional notes on performan
 - [React coding guidelines](#react-coding-guidelines)
   - [Basics](#basics)
     - [Use functional components instead of class components.](#use-functional-components-instead-of-class-components)
-    - [Use the `useState` and `useEffect` hooks for managing component state and side effects.](#use-the-usestate-and-useeffect-hooks-for-managing-component-state-and-side-effects)
     - [Use `React.memo` to memoize functional components for performance optimization.](#use-reactmemo-to-memoize-functional-components-for-performance-optimization)
-    - [Use the `useContext` hook to access global data without passing props down through multiple components.](#use-the-usecontext-hook-to-access-global-data-without-passing-props-down-through-multiple-components)
-    - [Use the `useCallback` hook to memoize callback functions and avoid unnecessary re-renders.](#use-the-usecallback-hook-to-memoize-callback-functions-and-avoid-unnecessary-re-renders)
     - [Avoid using anonymous arrow functions inside JSX tree as this can cause unnecessary re-renders of the component, since a new function is created on each render.](#avoid-using-anonymous-arrow-functions-inside-jsx-tree-as-this-can-cause-unnecessary-re-renders-of-the-component-since-a-new-function-is-created-on-each-render)
-    - [Use the `useMemo` hook to cache the result of a calculation between re-renders.](#use-the-usememo-hook-to-cache-the-result-of-a-calculation-between-re-renders)
   - [Performance \& Optimizations](#performance--optimizations)
   - [Hooks](#hooks)
     - [Only call Hooks at the top level, don't call them inside loops, conditions, or nested functions.](#only-call-hooks-at-the-top-level-dont-call-them-inside-loops-conditions-or-nested-functions)
     - [Only call Hooks in React function components and custom Hooks, not in regular JavaScript functions.](#only-call-hooks-in-react-function-components-and-custom-hooks-not-in-regular-javascript-functions)
     - [useEffect and similar Hooks should include all dependencies in the dependency array](#useeffect-and-similar-hooks-should-include-all-dependencies-in-the-dependency-array)
+    - [Use the `useState` and `useEffect` hooks for managing component state and side effects.](#use-the-usestate-and-useeffect-hooks-for-managing-component-state-and-side-effects)
+    - [Use the `useContext` hook to access global data without passing props down through multiple components.](#use-the-usecontext-hook-to-access-global-data-without-passing-props-down-through-multiple-components)
+    - [Use the `useCallback` hook to memoize callback functions and avoid unnecessary re-renders.](#use-the-usecallback-hook-to-memoize-callback-functions-and-avoid-unnecessary-re-renders)
+    - [Use the `useMemo` hook to cache the result of a calculation between re-renders.](#use-the-usememo-hook-to-cache-the-result-of-a-calculation-between-re-renders)
   - [Accessibility](#accessibility)
     - [The img tag should include an alt attribute](#the-img-tag-should-include-an-alt-attribute)
     - [Do not use keywords like "image," "photo," or "picture" in the alt attribute of the img tag. Screen readers already identify img elements as images, so including such keywords in the alt attribute is unnecessary.](#do-not-use-keywords-like-image-photo-or-picture-in-the-alt-attribute-of-the-img-tag-screen-readers-already-identify-img-elements-as-images-so-including-such-keywords-in-the-alt-attribute-is-unnecessary)
@@ -27,8 +27,10 @@ This is a code style guide with best practices and additional notes on performan
     - [Elements with an ARIA role must also declare the properties required by that role](#elements-with-an-aria-role-must-also-declare-the-properties-required-by-that-role)
 
 ## Basics
+
 ### Use functional components instead of class components.
 优先使用函数组件，避免使用类组件
+
   ```js
   // bad
   class MyComponent extends React.Component {
@@ -40,59 +42,6 @@ This is a code style guide with best practices and additional notes on performan
   // good
   function MyComponent() {
     return <div>Hello</div>
-  }
-  ```
-### Use the `useState` and `useEffect` hooks for managing component state and side effects.
- 使用 `useState` 和 `useEffect` 钩子来管理组件状态和副作用
-
-  ```js
-  // Bad Code Example:
-  import React, { Component } from 'react';
-
-  class MyComponent extends Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        count: 0
-      };
-    }
-
-    componentDidMount() {
-      document.title = `Current Count: ${this.state.count}`;
-    }
-
-    componentDidUpdate() {
-      document.title = `Current Count: ${this.state.count}`;
-    }
-
-    render() {
-      return (
-        <div>
-          <h1>Current Count: {this.state.count}</h1>
-          <button onClick={() => this.setState({ count: this.state.count + 1 })}>
-            Increment
-          </button>
-        </div>
-      );
-    }
-  }
-
-  // Good Code Example:
-  import React, { useState, useEffect } from 'react';
-
-  function MyComponent() {
-    const [count, setCount] = useState(0);
-
-    useEffect(() => {
-      document.title = `Current Count: ${count}`;
-    }, [count]);
-
-    return (
-      <div>
-        <h1>Current Count: {count}</h1>
-        <button onClick={() => setCount(count + 1)}>Increment</button>
-      </div>
-    );
   }
   ```
 
@@ -133,121 +82,6 @@ This is a code style guide with best practices and additional notes on performan
 
   By using this approach, unnecessary re-renders can be avoided, improving performance.
 
-### Use the `useContext` hook to access global data without passing props down through multiple components.
- 使用useContext hook 存取全局数据， 防止组件层层传递props
-  ```js
-  // Example of using useContext to access global data
-  import React, { createContext, useContext, useState } from 'react';
-
-  // Create a Context
-  const UserContext = createContext();
-
-  // A provider component to wrap the app and provide the context value
-  function UserProvider({ children }) {
-    const [user, setUser] = useState({ name: 'John Doe', age: 30 });
-
-    return (
-      <UserContext.Provider value={{ user, setUser }}>
-        {children}
-      </UserContext.Provider>
-    );
-  }
-
-  // A component that consumes the context value
-  function UserProfile() {
-    const { user } = useContext(UserContext);
-
-    return (
-      <div>
-        <h1>User Profile</h1>
-        <p>Name: {user.name}</p>
-        <p>Age: {user.age}</p>
-      </div>
-    );
-  }
-
-  // A component that updates the context value
-  function UpdateUser() {
-    const { setUser } = useContext(UserContext);
-
-    return (
-      <button onClick={() => setUser({ name: 'Jane Doe', age: 25 })}>
-        Update User
-      </button>
-    );
-  }
-
-  // Main App component
-  function App() {
-    return (
-      <UserProvider>
-        <UserProfile />
-        <UpdateUser />
-      </UserProvider>
-    );
-  }
-
-  export default App;
-  ```
-  `Explanation`:
-
-  createContext: Creates a context object (UserContext) to hold global data.
-
-  UserProvider: A provider component that wraps the app and provides the context value (user and setUser) to all child components.
-
-  useContext: Used in UserProfile and UpdateUser components to access the user data and setUser function from the context.
-
-  `Benefits`: Avoids prop drilling by allowing components to directly access global data without passing props through intermediate components.
-
-### Use the `useCallback` hook to memoize callback functions and avoid unnecessary re-renders.
- 使用`useCallback` 缓存函数，避免不必要的重新渲染.
-  ```js
-    // Example of using useCallback to memoize functions
-  import React, { useState, useCallback } from 'react';
-
-  // A child component that receives a callback as a prop
-  const ChildComponent = React.memo(({ onClick }) => {
-    console.log('ChildComponent rendered');
-    return <button onClick={onClick}>Click Me</button>;
-  });
-
-  function App() {
-    const [count, setCount] = useState(0);
-    const [text, setText] = useState('');
-
-    // Memoize the callback to prevent unnecessary re-renders of ChildComponent
-    const handleClick = useCallback(() => {
-      console.log('Button clicked');
-    }, []);
-
-    return (
-      <div>
-        <h1>Count: {count}</h1>
-        <button onClick={() => setCount(count + 1)}>Increment Count</button>
-        <input
-          type="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Type something"
-        />
-        {/* Pass the memoized callback to the child component */}
-        <ChildComponent onClick={handleClick} />
-      </div>
-    );
-  }
-
-  export default App;
-  ```
-  `Explanation`:
-  useCallback is used to memoize the handleClick function so that it is not recreated on every render unless its dependencies change.
-  In this example, the dependency array is empty ([]), so the function remains the same across renders.
-
-  Optimization: The ChildComponent is wrapped with React.memo, which prevents it from re-rendering unless its props change.
-  Since the handleClick function is memoized, ChildComponent will not re-render unnecessarily when the parent component updates.
-
-  `Benefits`:
-  Avoids creating a new function on every render, which can prevent unnecessary re-renders of child components.
-  Improves performance in components with expensive re-renders or deep component trees.
 
  ### Avoid using anonymous arrow functions inside JSX tree as this can cause unnecessary re-renders of the component, since a new function is created on each render.
   在JSX 中避免使用匿名箭头函数防止不必要的重新渲染
@@ -292,48 +126,6 @@ This is a code style guide with best practices and additional notes on performan
 
   export default Counter;
   ```
-### Use the `useMemo` hook to cache the result of a calculation between re-renders.
- 使用`useMemo` 缓存计算结果，避免重新计算.
-  ```js
-  import React, { useState, useMemo } from 'react';
-
-  function ExpensiveCalculationComponent() {
-    const [count, setCount] = useState(0);
-    const [text, setText] = useState('');
-
-    // Use useMemo to cache the result of an expensive calculation
-    const expensiveCalculation = useMemo(() => {
-      console.log('Performing expensive calculation...');
-      let result = 0;
-      for (let i = 0; i < 1000000000; i++) {
-        result += i;
-      }
-      return result;
-    }, [count]); // Recalculate only when `count` changes
-
-    return (
-      <div>
-        <h1>Expensive Calculation Result: {expensiveCalculation}</h1>
-        <button onClick={() => setCount(count + 1)}>Increment Count</button>
-        <input
-          type="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Type something"
-        />
-      </div>
-    );
-  }
-
-  export default ExpensiveCalculationComponent;
- ```
-
-1. The useMemo hook is used to memoize the result of the expensive calculation.The calculation is only re-executed when the count dependency changes.
-
-2. Without useMemo, the expensive calculation would run on every render, even when unrelated state (like text) changes.
-
-3. With useMemo, the calculation is skipped unless count changes, improving performance.
-
 
 ## Performance & Optimizations
 
@@ -451,6 +243,218 @@ function MyComponent() {
   }, [local]);
 }
 ```
+### Use the `useState` and `useEffect` hooks for managing component state and side effects.
+ 使用 `useState` 和 `useEffect` 钩子来管理组件状态和副作用
+
+  ```js
+  // Bad Code Example:
+  import React, { Component } from 'react';
+
+  class MyComponent extends Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        count: 0
+      };
+    }
+
+    componentDidMount() {
+      document.title = `Current Count: ${this.state.count}`;
+    }
+
+    componentDidUpdate() {
+      document.title = `Current Count: ${this.state.count}`;
+    }
+
+    render() {
+      return (
+        <div>
+          <h1>Current Count: {this.state.count}</h1>
+          <button onClick={() => this.setState({ count: this.state.count + 1 })}>
+            Increment
+          </button>
+        </div>
+      );
+    }
+  }
+
+  // Good Code Example:
+  import React, { useState, useEffect } from 'react';
+
+  function MyComponent() {
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+      document.title = `Current Count: ${count}`;
+    }, [count]);
+
+    return (
+      <div>
+        <h1>Current Count: {count}</h1>
+        <button onClick={() => setCount(count + 1)}>Increment</button>
+      </div>
+    );
+  }
+  ```
+
+  ### Use the `useContext` hook to access global data without passing props down through multiple components.
+ 使用useContext hook 存取全局数据， 防止组件层层传递props
+  ```js
+  // Example of using useContext to access global data
+  import React, { createContext, useContext, useState } from 'react';
+
+  // Create a Context
+  const UserContext = createContext();
+
+  // A provider component to wrap the app and provide the context value
+  function UserProvider({ children }) {
+    const [user, setUser] = useState({ name: 'John Doe', age: 30 });
+
+    return (
+      <UserContext.Provider value={{ user, setUser }}>
+        {children}
+      </UserContext.Provider>
+    );
+  }
+
+  // A component that consumes the context value
+  function UserProfile() {
+    const { user } = useContext(UserContext);
+
+    return (
+      <div>
+        <h1>User Profile</h1>
+        <p>Name: {user.name}</p>
+        <p>Age: {user.age}</p>
+      </div>
+    );
+  }
+
+  // A component that updates the context value
+  function UpdateUser() {
+    const { setUser } = useContext(UserContext);
+
+    return (
+      <button onClick={() => setUser({ name: 'Jane Doe', age: 25 })}>
+        Update User
+      </button>
+    );
+  }
+
+  // Main App component
+  function App() {
+    return (
+      <UserProvider>
+        <UserProfile />
+        <UpdateUser />
+      </UserProvider>
+    );
+  }
+
+  export default App;
+  ```
+  `Explanation`:
+
+  createContext: Creates a context object (UserContext) to hold global data.
+
+  UserProvider: A provider component that wraps the app and provides the context value (user and setUser) to all child components.
+
+  useContext: Used in UserProfile and UpdateUser components to access the user data and setUser function from the context.
+
+  `Benefits`: Avoids prop drilling by allowing components to directly access global data without passing props through intermediate components.
+
+### Use the `useCallback` hook to memoize callback functions and avoid unnecessary re-renders.
+ 使用`useCallback` 缓存函数，避免不必要的重新渲染.
+  ```js
+    // Example of using useCallback to memoize functions
+  import React, { useState, useCallback } from 'react';
+
+  // A child component that receives a callback as a prop
+  const ChildComponent = React.memo(({ onClick }) => {
+    console.log('ChildComponent rendered');
+    return <button onClick={onClick}>Click Me</button>;
+  });
+
+  function App() {
+    const [count, setCount] = useState(0);
+    const [text, setText] = useState('');
+
+    // Memoize the callback to prevent unnecessary re-renders of ChildComponent
+    const handleClick = useCallback(() => {
+      console.log('Button clicked');
+    }, []);
+
+    return (
+      <div>
+        <h1>Count: {count}</h1>
+        <button onClick={() => setCount(count + 1)}>Increment Count</button>
+        <input
+          type="text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Type something"
+        />
+        {/* Pass the memoized callback to the child component */}
+        <ChildComponent onClick={handleClick} />
+      </div>
+    );
+  }
+
+  export default App;
+  ```
+  `Explanation`:
+  useCallback is used to memoize the handleClick function so that it is not recreated on every render unless its dependencies change.
+  In this example, the dependency array is empty ([]), so the function remains the same across renders.
+
+  Optimization: The ChildComponent is wrapped with React.memo, which prevents it from re-rendering unless its props change.
+  Since the handleClick function is memoized, ChildComponent will not re-render unnecessarily when the parent component updates.
+
+  `Benefits`:
+  Avoids creating a new function on every render, which can prevent unnecessary re-renders of child components.
+  Improves performance in components with expensive re-renders or deep component trees.
+
+### Use the `useMemo` hook to cache the result of a calculation between re-renders.
+ 使用`useMemo` 缓存计算结果，避免重新计算.
+  ```js
+  import React, { useState, useMemo } from 'react';
+
+  function ExpensiveCalculationComponent() {
+    const [count, setCount] = useState(0);
+    const [text, setText] = useState('');
+
+    // Use useMemo to cache the result of an expensive calculation
+    const expensiveCalculation = useMemo(() => {
+      console.log('Performing expensive calculation...');
+      let result = 0;
+      for (let i = 0; i < 1000000000; i++) {
+        result += i;
+      }
+      return result;
+    }, [count]); // Recalculate only when `count` changes
+
+    return (
+      <div>
+        <h1>Expensive Calculation Result: {expensiveCalculation}</h1>
+        <button onClick={() => setCount(count + 1)}>Increment Count</button>
+        <input
+          type="text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Type something"
+        />
+      </div>
+    );
+  }
+
+  export default ExpensiveCalculationComponent;
+ ```
+
+1. The useMemo hook is used to memoize the result of the expensive calculation.The calculation is only re-executed when the count dependency changes.
+
+2. Without useMemo, the expensive calculation would run on every render, even when unrelated state (like text) changes.
+
+3. With useMemo, the calculation is skipped unless count changes, improving performance.
+
 
 
 ## Accessibility
