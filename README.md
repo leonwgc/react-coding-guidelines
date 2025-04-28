@@ -7,7 +7,6 @@ This is a code style guide with best practices and additional notes on performan
     - [Use functional components instead of class components.](#use-functional-components-instead-of-class-components)
     - [Avoid using anonymous arrow functions inside JSX tree](#avoid-using-anonymous-arrow-functions-inside-jsx-tree)
   - [React / Redux Performance \& Optimizations](#react--redux-performance--optimizations)
-    - [Use the latest versions of React and Redux](#use-the-latest-versions-of-react-and-redux)
     - [Use the useSelector and useDispatch hooks](#use-the-useselector-and-usedispatch-hooks)
     - [Use lazy loading](#use-lazy-loading)
     - [Use `React.memo` to memoize functional components for performance optimization.](#use-reactmemo-to-memoize-functional-components-for-performance-optimization)
@@ -53,8 +52,8 @@ This is a code style guide with best practices and additional notes on performan
   在JSX 中避免使用匿名箭头函数防止不必要的重新渲染
 
   ```js
-    // bad
-    import React, { useState } from 'react';
+  // bad
+  import React, { useState } from 'react';
 
   function Counter() {
     const [count, setCount] = useState(0);
@@ -70,8 +69,8 @@ This is a code style guide with best practices and additional notes on performan
 
   export default Counter;
 
-    // good
-    import React, { useState, useCallback } from 'react';
+  // good
+  import React, { useState, useCallback } from 'react';
 
   function Counter() {
     const [count, setCount] = useState(0);
@@ -94,8 +93,6 @@ This is a code style guide with best practices and additional notes on performan
   ```
 
 ## React / Redux Performance & Optimizations
-
-### Use the latest versions of React and Redux
 
 ### Use the useSelector and useDispatch hooks
 1. useSelector and useDispatch provide a concise and modern way to interact with the Redux store, replacing the older connect HOC.
@@ -144,7 +141,7 @@ export default Counter;
 ### Use lazy loading
 1. Use lazy loading to improve the initial load time of your application.
 2. Lazy loading is a technique of deferring the loading of non-critical parts of your application until they are actually needed.
-3.
+
   ```js
     import React, { Suspense } from 'react';
 
